@@ -7,7 +7,7 @@ const userShema = mongoose.Schema({
         required : true,
         unique : true
     },
-    passowrd : {
+    password : {
         type : String,
         required : true
     },
@@ -39,5 +39,5 @@ const userShema = mongoose.Schema({
 
 })
 
-const userMode = mongoose.model("user",userShema);
-export default userMode;
+const User = mongoose.model("user",userShema);
+export default User;
