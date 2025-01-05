@@ -1,5 +1,8 @@
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
+import dotenv from "dotenv";
+
+dotenv.config();
                               
 
 export function registerUser(req,res){
@@ -43,7 +46,7 @@ export function loginUser(req,res){
                         email : user.email,
                         role : user.role
 
-                    },"ravindu2232")
+                    },token,process.env.SEKRET_KEY)
                     res.json({
                         message : "Login successfull",
                         token : token
