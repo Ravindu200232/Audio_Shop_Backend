@@ -4,6 +4,9 @@ import bodyParser from "body-parser"
 import userRouter from "./routes/userRouter.js";
 import productRouter from "./routes/productRouter.js";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 
@@ -30,7 +33,7 @@ app.use((req,res,next)=>{
 
 
 
-const MONGOURL = "mongodb+srv://ravindu:R200232@cluster0.vikkn.mongodb.net/AudioShop?retryWrites=true&w=majority&appName=Cluster0";
+const MONGOURL = process.env.MONGO_URL;
 
 mongoose.connect(MONGOURL);
 
