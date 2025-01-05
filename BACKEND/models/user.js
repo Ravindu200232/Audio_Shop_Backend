@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const userShema = mongoose.Schema({
+const userShema = new mongoose.Schema({
 
     email : {
         type : String,
@@ -34,7 +34,8 @@ const userShema = mongoose.Schema({
     },
     image : {
         type : String,
-        required : true
+        required : true,
+        default : "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
     }
 
 })
