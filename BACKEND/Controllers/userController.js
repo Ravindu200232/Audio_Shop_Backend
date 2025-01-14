@@ -3,25 +3,39 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
+
 dotenv.config();
                               
 
-export function registerUser(req,res){
+export async function registerUser(req,res){
 
     const data = req.body;
     data.password = bcrypt.hashSync(data.password,10);
+    const email = data.email;
     
     const  newUser = new User(data);
 
-    newUser.save().then(
+    try{
+       const checkEmail =  await User.findOne({
+        email : email
+       })
+       if(checkEmail == null){
+        await newUser.save();
         res.json({
-            message : "User added"
+            message : "Uses added!"
         })
-    ).catch((error)=>{
-        res.states(500).json({
-            error : "User registration failed"
+       }else{
+        res.json({
+            message : "email is Already use"
         })
-    })
+       }  
+
+    }catch(err){
+        res.json({
+            err : "User registration failed"
+        })
+    }
+
 }
 
 export function loginUser(req,res){

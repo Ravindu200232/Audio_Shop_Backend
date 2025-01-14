@@ -7,7 +7,7 @@ reviewRouter.post("/",addReview);
 
 reviewRouter.get("/",getReview);
 
-reviewRouter.get("/delete/:email",deleteReview);
+reviewRouter.delete("/delete/:email",deleteReview);
 
 reviewRouter.put("/approve/:email",approveReview);
 
