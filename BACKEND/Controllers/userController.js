@@ -60,7 +60,8 @@ export function loginUser(req,res){
                         lastName : user.lastName,
                         email : user.email,
                         role : user.role,
-                        image : user.image
+                        image : user.image,
+                        phone : user.phone
 
 
                     },process.env.SEKRET_KEY)
@@ -76,4 +77,25 @@ export function loginUser(req,res){
             }
         }
     )
+}
+
+
+export function isItAdmin(req){
+    let isAdmin = false;
+    if(req.user != null){
+        if(req.user.role == "admin"){
+        isAdmin = true;
+        }
+    }
+    return isAdmin
+}
+
+export function isItCustomer(req) {
+    let isCustomer = false;
+    if (req.user != null) {
+        if (req.user.role == "customer") {
+            isCustomer = true;
+        }
+    }
+    return isCustomer;
 }
