@@ -46,7 +46,7 @@ export function loginUser(req,res){
     }).then(
         (user)=>{
             if(user == null){
-                res.states(404).json({
+                res.status(404).json({
                     error : "User not found"
                 })
             }else{
@@ -67,8 +67,8 @@ export function loginUser(req,res){
                     },process.env.SEKRET_KEY)
                     res.json({
                         message : "Login successfull",
-                        token : token
-                    })
+                        token : token,
+                        user : user                   })
                 }else{
                     res.status(401).json({
                         message : "Login failed"
