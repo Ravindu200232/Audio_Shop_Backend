@@ -19,10 +19,10 @@ export default function Login(){
         password : password
        }).then((res)=>{
         toast.success("Login success")
-
-        console.log(res.data.user.role)
-
         const user = res.data.user
+
+        localStorage.setItem("token",res.data.token)
+
 
         if(user.role == "admin"){
             navigate("/admin/")
