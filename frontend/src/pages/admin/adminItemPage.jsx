@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai"; 
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 let sampleArr = [
     {
@@ -44,13 +45,24 @@ let sampleArr = [
       productDescription: "A rotating disco ball light with dynamic LED patterns for party environments."
     }
   ];
-  
 
   
- 
 export default function AdminItemPage(){
 
     const [items,setItems] = useState(sampleArr)
+
+
+    const token  = localStorage.getItem("token");
+  axios.get("http://localhost:3000/api/products",{
+    headers: {"Authorization":`Bearer ${token}`}
+  }).then((res)=>{
+   console.log(res.data)
+   setItems(res.data)
+  }).catch((err)=>{
+    console.log(err)
+  })
+
+
     return(
         <div className="w-full h-full  relative flex">
 

@@ -42,12 +42,14 @@ export async function getProduct(req,res){
         if(isItAdmin(req)){
             const product = await Product.find();
             res.json(product)
+            return
         }
         else{
-            const product = await Product.findOne({
+            const product = await Product.find({
                 availability : true
             })
             res.json(product)
+            return
         }
 
         
