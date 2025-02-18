@@ -6,6 +6,7 @@ import { CiUser } from "react-icons/ci";
 import { Link, Route, Routes } from "react-router-dom";
 import AdminItemPage from "./adminItemPage";
 import AddItemPage from "./addItemPage";
+import UpdateItemPage from "./updateItemPage";
 
 
 
@@ -24,6 +25,7 @@ export default function AdminPage(){
       <Route path="/booking" element={<h1>Booking</h1>}/>
       <Route path="/item" element={<AdminItemPage/>}/>
       <Route path="/item/add" element={<AddItemPage/>}/>
+      <Route path="/item/edit" element={<UpdateItemPage/>}/>
       </Routes>
 
       

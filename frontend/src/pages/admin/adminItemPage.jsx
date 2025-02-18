@@ -1,102 +1,110 @@
-import { useState } from "react";
-import { AiOutlinePlusCircle } from "react-icons/ai"; 
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { AiOutlinePlusCircle } from "react-icons/ai";
+import { FiEdit, FiTrash2 } from "react-icons/fi";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-let sampleArr = [
-    {
-      productKey: "P12345",
-      productName: "Wireless Speaker",
-      productPrice: "149.99",
-      productCategory: "Audio",
-      productDimension: "10x5x3 inches",
-      productDescription: "A high-quality wireless speaker with deep bass and Bluetooth connectivity."
-    },
-    {
-      productKey: "P12346",
-      productName: "LED Stage Light",
-      productPrice: "89.99",
-      productCategory: "Light",
-      productDimension: "8x8x6 inches",
-      productDescription: "A powerful LED stage light with multiple color modes and remote control."
-    },
-    {
-      productKey: "P12347",
-      productName: "Studio Microphone",
-      productPrice: "129.99",
-      productCategory: "Audio",
-      productDimension: "6x2x2 inches",
-      productDescription: "A professional studio microphone with noise cancellation and high sensitivity."
-    },
-    {
-      productKey: "P12348",
-      productName: "DJ Mixer",
-      productPrice: "249.99",
-      productCategory: "Audio",
-      productDimension: "14x10x4 inches",
-      productDescription: "A high-performance DJ mixer with multiple input options and EQ control."
-    },
-    {
-      productKey: "P12349",
-      productName: "Disco Ball Light",
-      productPrice: "59.99",
-      productCategory: "Light",
-      productDimension: "7x7x7 inches",
-      productDescription: "A rotating disco ball light with dynamic LED patterns for party environments."
+
+
+export default function AdminItemPage() {
+  const [items, setItems] = useState([]);
+  const [itemsLoaded,setItemLoaded] = useState(false);
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if(!itemsLoaded){
+      const token = localStorage.getItem("token");
+    axios.get("http://localhost:3000/api/products", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        setItems(res.data);
+        setItemLoaded(true)
+      })
+      .catch((err) => {
+        console.error(err);
+      });
     }
-  ];
+    
+  }, [itemsLoaded]);
 
-  
-export default function AdminItemPage(){
+  const handleDelete = (key) => {
+    if(window.confirm("Are you sure you want to delete this item?")){
 
-    const [items,setItems] = useState(sampleArr)
-
-
-    const token  = localStorage.getItem("token");
-  axios.get("http://localhost:3000/api/products",{
-    headers: {"Authorization":`Bearer ${token}`}
-  }).then((res)=>{
-   console.log(res.data)
-   setItems(res.data)
-  }).catch((err)=>{
-    console.log(err)
-  })
-
-
-    return(
-        <div className="w-full h-full  relative flex">
-
-            <table>
-                <thead>
-                    <th>Key</th>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Category</th>
-                    <th>Dimensions</th>
-                    <th>Description</th>
-                    <th>Availability</th>
-                </thead>
-                <tbody>
-                    {
-                        items.map((product,index)=>{
-                         return<tr key={product.index}>
-                            <td>{product.productKey}</td>
-                            <td>{product.productName}</td>
-                            <td>{product.productPrice}</td>
-                            <td>{product.productCategory}</td>
-                            <td>{product.productDimension}</td>
-                            <td>{product.productDescription}</td>
-                            <td>{}</td>
-                         </tr>
-                        })
-                    }
-                </tbody>
-            </table>
-
-
-
-            <Link to="/admin/item/add"><AiOutlinePlusCircle  className="text-[100px] absolute right-2 bottom-2  hover:text-orange-700 cursor-pointer"/></Link>
-           
-        </div>
+      setItems(items.filter((item) => item.key !== key));
+      const token = localStorage.getItem("token");
+      axios.delete(`http://localhost:3000/api/products/${key}`,{
+      headers : {Authorization: `Bearer ${token}`},
+    }).then(
+      (res)=>{
+        console.log(res.data);
+        setItemLoaded(false) // windows.reoload wena eka wenuwata use karanne
+      }
+    ).catch(
+      (err)=>{
+        console.log(err);
+      }
     )
-} 
+    }
+    
+  };
+
+  return (
+    <div className="w-full h-full p-6 flex flex-col items-center">
+      {!itemsLoaded && <div className="border-b w-[100px] h-[100px]  my-4 border-b-green-500 rounded-full animate-spin">
+
+      </div>}
+      {itemsLoaded && <div className="w-full max-w-6xl overflow-x-auto">
+        <table className="w-full border border-gray-200 shadow-lg rounded-lg overflow-hidden">
+          <thead>
+            <tr className="bg-gray-800 text-white">
+              <th className="py-3 px-4">Key</th>
+              <th className="py-3 px-4">Name</th>
+              <th className="py-3 px-4">Price</th>
+              <th className="py-3 px-4">Category</th>
+              <th className="py-3 px-4">Dimensions</th>
+              <th className="py-3 px-4">Description</th>
+              <th className="py-3 px-4">Availability</th>
+              <th className="py-3 px-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((product) => (
+              <tr key={product.key} className="border-b hover:bg-gray-100 transition">
+                <td className="py-3 px-4 text-center">{product.key}</td>
+                <td className="py-3 px-4 text-center">{product.name}</td>
+                <td className="py-3 px-4 text-center">${product.price}</td>
+                <td className="py-3 px-4 text-center">{product.category}</td>
+                <td className="py-3 px-4 text-center">{product.dimensions}</td>
+                <td className="py-3 px-4 text-center">{product.description}</td>
+                <td className="py-3 px-4 text-center font-semibold text-{product.availability === 'In Stock' ? 'green-600' : 'red-600'}">
+                  {product.availability}
+                </td>
+                <td className="py-3 px-4 text-center flex justify-center space-x-3">
+
+                  <button className="text-blue-500 hover:text-blue-700" onClick={()=>{
+                    navigate('/admin/item/edit',{state:product})//product eke yawanawa
+                  }}>
+                    <FiEdit size={20} />
+                  </button>
+
+                  <button
+                    onClick={() => handleDelete(product.key)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <FiTrash2 size={20} />
+                  </button>
+
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>}
+
+      <Link to="/admin/item/add" className="fixed bottom-6 right-6 text-orange-700 hover:text-orange-500">
+        <AiOutlinePlusCircle size={80} />
+      </Link>
+    </div>
+  );
+}

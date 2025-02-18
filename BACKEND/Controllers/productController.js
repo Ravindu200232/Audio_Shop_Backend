@@ -67,6 +67,7 @@ export async function updateProduct(req,res){
         if(isItAdmin(req)){ 
 
             const data = req.body
+            const key = data.key
            
 
             await Product.updateOne({key : key},data)
@@ -79,9 +80,13 @@ export async function updateProduct(req,res){
             res.status(401).json({
                 message : "You are not autherized to perform this action"
             })
+            return
         }
         
     }catch(err){
+        res.status(500).json({
+            err : err
+        })
 
     }
 }
