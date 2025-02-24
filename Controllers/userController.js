@@ -99,3 +99,32 @@ export function isItCustomer(req) {
     }
     return isCustomer;
 }
+
+export async function getUsers(req,res) {
+
+    try{
+        if(req.user!=null){
+            
+
+            if(isItAdmin(req)){
+
+                const result = await User.find();
+                res.json(result)
+
+            }else{
+                res.status(403).json({
+                    message : "cant this task "
+                })
+            }
+        }else{
+            res.status(403).json({
+                message : "login first"
+            })
+        }
+    }catch(err){
+        res.status(500).json({
+            error : err
+        })
+    }
+    
+}
