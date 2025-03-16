@@ -85,3 +85,67 @@ export async function createOrder(req, res) {
     });
   }
 }
+
+export async function getQuote(req, res) {
+  console.log(req.body);
+  const data = req.body;
+  const orderInfo = {
+    orderItem: [],
+  };
+
+  let ondDayCost = 0;
+
+  for (let i = 0; i < data.orderItem.length; i++) {
+    try {
+      const product = await Product.findOne({ key: data.orderItem[i].key });
+
+      if (product == null) {
+        res.status(404).json({
+          message: "Product with key " + data.orderItem[i].key + "not found",
+        });
+        return;
+      }
+
+      if (product.availability == false) {
+        res.status(400).json({
+          message:
+            "Product with key " + data.orderItem[i].key + "is not available",
+        });
+        return;
+      }
+
+      orderInfo.orderItem.push({
+        product: {
+          key: product.key,
+          name: product.name,
+          image: product.Image[0],
+          price: product.price,
+        },
+        quantity: data.orderItem[i].qty,
+      });
+
+      ondDayCost += product.price * data.orderItem[i].qty;
+    } catch (err) {
+      res.status(500).json({
+        message: "Failed to create order",
+      });
+    }
+  }
+
+  orderInfo.days = data.days;
+  orderInfo.startingDate = data.startingDate;
+  orderInfo.endingDate = data.endingDate;
+  orderInfo.totalAmount = ondDayCost * data.days;
+
+  try {
+    res.json({
+      message: "Order quotation",
+      total: orderInfo.totalAmount,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      message: "Failed to create order",
+    });
+  }
+}

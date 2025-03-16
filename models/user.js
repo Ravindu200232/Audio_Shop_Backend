@@ -36,8 +36,14 @@ const userShema = new mongoose.Schema({
         type : String,
         required : true,
         default : "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
+    },
+    isBlocked : {
+        type : Boolean,
+        required : true,
+        default : false
     }
 
+    
 })
 
 const User = mongoose.model("user",userShema);
