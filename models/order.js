@@ -15,6 +15,11 @@ const orderSchema = new mongoose.Schema({
     required: true,
     default: Date.now(),
   },
+  description:{
+    type: String,
+    required: false,
+    default: "",
+  },
   orderItem: {
     type: [
       {

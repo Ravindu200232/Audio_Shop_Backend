@@ -4,6 +4,12 @@ import { isItAdmin, isItCustomer } from "./userController.js";
 export async function addInquiry(req,res) {
 
     try{
+        if(req.user == null){
+            res.status(401).json({
+                message : "Please login and try again"
+            })
+            return  
+        }
         if(isItCustomer){
             const data = req.body;
             
@@ -86,7 +92,7 @@ export async function deleteInquiry(req,res){
         if(isItAdmin(req)){
             const id = req.params.id;
             await Inquiry.deleteOne({
-                id:id
+                _id:id
             })
             res.json({
                 message : "Inquiry deleted successfully"
@@ -135,7 +141,7 @@ export async function updateInquiry(req,res){
         const data = req.body;
         const id = req.params.id
         if(isItAdmin(req)){
-            await Inquiry.updateOne({id:id},data)
+            await Inquiry.updateOne({_id:id},data)
             res.json({
                 message : "Inquiry updated successfully"
             })
