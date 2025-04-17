@@ -26,7 +26,7 @@ app.use((req,res,next)=>{
 
     if(token!=null){
         token = token.replace("Bearer ","");
-        jwt.verify(token,"ravindu2232",
+        jwt.verify(token,process.env.MONGO_URL,
             (err,decoded)=>{
                 if(!err){
                    req.user = decoded;
