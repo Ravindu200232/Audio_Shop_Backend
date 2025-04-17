@@ -1,10 +1,14 @@
 import mongoose from "mongoose";
 
 const reviewShema = new mongoose.Schema({
+
+    productId : {
+        type : String,
+        required : true
+    },
     email : {
         type : String,
         required : true,
-        unique : true
     },
     name : {
         type : String,

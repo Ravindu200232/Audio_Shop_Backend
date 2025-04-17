@@ -8,6 +8,9 @@ import dotenv from "dotenv";
 import reviewRouter from "./routes/reviewRouter.js";
 import inquiryRouter from "./routes/inquiryRouter.js";
 import cors from "cors";
+import orderRouter from "./routes/orderRoute.js";
+import packageRoute from "./routes/packageRoutes.js";
+import paymentRouter from "./routes/paymentRoute.js";
 
 dotenv.config();
 
@@ -23,7 +26,7 @@ app.use((req,res,next)=>{
 
     if(token!=null){
         token = token.replace("Bearer ","");
-        jwt.verify(token,"ravindu2232",
+        jwt.verify(token,process.env.MONGO_URL,
             (err,decoded)=>{
                 if(!err){
                    req.user = decoded;
@@ -51,7 +54,10 @@ connection.once("open",()=>{
 app.use("/api/users",userRouter);
 app.use("/api/products",productRouter);
 app.use("/api/reviews",reviewRouter);
-app.use("/api/inquiry",inquiryRouter)
+app.use("/api/inquiry",inquiryRouter);
+app.use("/api/orders",orderRouter);
+app.use("/api/packages", packageRoute);
+app.use("/api/payment",paymentRouter)
 
 app.listen(3000,()=>{
     console.log("Server is running port 3000");

@@ -1,9 +1,12 @@
 import Review from "../models/review.js";
+import { isItAdmin, isItCustomer } from "./userController.js";
 
 
 export async function  addReview(req,res){
    
     const data = req.body
+    
+   
 
     if(req.user == null){
         res.json({
@@ -15,6 +18,7 @@ export async function  addReview(req,res){
     data.name = req.user.firstName + " " + req.user.lastName;
     data.profilePicture = req.user.image;
     data.email = req.user.email
+    console.log(data)
 
     const newReview = new Review(data)
     
@@ -56,7 +60,7 @@ export async function getReview(req,res){
    
    }
 
-   if(user.role == "admin"){
+   if(isItAdmin(req)){
 
    
     try{
@@ -77,7 +81,7 @@ export async function getReview(req,res){
 
 export async function deleteReview(req,res){
 
-    const email = req.params.email
+    const id = req.params.id
 
     if(req.user == null){
         res.status(401).json({
@@ -89,7 +93,7 @@ export async function deleteReview(req,res){
     try{
         if(req.user.role == "admin"){
             await Review.deleteOne({
-                email : email
+                _id : id
             })
             res.json({
                 message : "delete Successfully"
@@ -97,7 +101,7 @@ export async function deleteReview(req,res){
         }
         if(req.user.role == "customer" && email == req.user.email){
             await Review.deleteOne({
-                email : email
+                _id : id
             })
             res.json({
                 message : "delete Successfully"
@@ -115,20 +119,22 @@ export async function deleteReview(req,res){
 
 export async function approveReview(req,res){
 
-    const email = req.params.email;
+    const id = req.params.id;
     
 
-    if(req.user == null){
-        res.status(401).json({
-            message : "please login"
-        })
-        return
-    }
-
+    
     try{
-        if(req.user.role == "admin"){
+        if(req.user == null){
+            res.status(401).json({
+                message : "please login"
+            })
+            return
+        }
+    
+    
+        if(isItAdmin(req)){
             await Review.updateOne({
-                email : email
+                _id : id
             },
             {
                 isApproved : true
@@ -141,6 +147,27 @@ export async function approveReview(req,res){
               message : "You are not admin"
             })
         }
+
+    }catch(err){
+        res.status(500).json({
+            err : "isApproved unsuccessfully"
+        })
+    }
+}
+
+export async function disApproveReview(req,res){
+
+    try{
+        const key = req.params.key;
+        
+            
+                const result = await Review.find({
+                    productId : key,
+                    isApproved : true,
+                })
+                res.json(result);
+            
+        
 
     }catch(err){
         res.status(500).json({
