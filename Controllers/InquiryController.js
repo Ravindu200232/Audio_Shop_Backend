@@ -101,7 +101,7 @@ export async function deleteInquiry(req,res){
         }
         else if(isItCustomer(req)){
             const id = req.params.id;
-            const inquiry = await Inquiry.findOne({id:id});
+            const inquiry = await Inquiry.findOne({_id:id});
             if(inquiry == null){
                 res.status(404).json({
                     message : "Inqury not found"
@@ -109,7 +109,7 @@ export async function deleteInquiry(req,res){
                 return
             }
             if(inquiry.email == req.user.email){
-                    await inquiry.deleteOne({id:id})
+                    await inquiry.deleteOne({_id:id})
                     res.json({
                         message : "Inquiry deleted successfully"
                     })
@@ -148,11 +148,11 @@ export async function updateInquiry(req,res){
             return
         }
         else if(isItCustomer(req)){
-            const inquiry = await Inquiry.findOne({id:id})
+            const inquiry = await Inquiry.findOne({_id:id})
             console.log(req.user.email)
             console.log(inquiry.email)
             if(inquiry.email == req.user.email){
-                await Inquiry.updateOne({id:id},{message : data.message})
+                await Inquiry.updateOne({_id:id},{message : data.message})
                 res.json({message : "Inquiry update successfully"})
                 return
             }
