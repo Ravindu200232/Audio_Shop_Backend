@@ -51,13 +51,14 @@ export async function registerUser(req, res) {
 
 export function loginUser(req, res) {
   const data = req.body;
+  
 
   User.findOne({
     email: data.email,
   }).then((user) => {
     if (user == null) {
       res.status(404).json({
-        error: "User not found",
+        message: "User not found",
       });
     } else {
       if (!user.isBlocked) {
@@ -86,7 +87,7 @@ export function loginUser(req, res) {
           });
         } else {
           res.status(401).json({
-            message: "Login failed",
+            message: "Password incorrect ,please try again!",
           });
         }
       } else {
